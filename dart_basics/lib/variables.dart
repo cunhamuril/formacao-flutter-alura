@@ -1,4 +1,4 @@
-void exec() {
+void main() {
   /**
    * Numbers
    */
