@@ -17,10 +17,10 @@ void main() {
    * Booleans
    */
   bool isGeek = true;
-  bool isAgeEqualtall = age == tall;
+  bool isAgeEqualTall = age == tall;
 
   print(isGeek); // true
-  print(isAgeEqualtall); // false
+  print(isAgeEqualTall); // false
 
   /**
    * Strings
