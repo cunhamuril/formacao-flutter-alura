@@ -18,6 +18,8 @@ Linguagens com objetivos diferentes para solucionar problemas diferentes.
 
 ### E na programação?
 
+[Artigo completo do GeekHunter](https://blog.geekhunter.com.br/quais-sao-os-paradigmas-de-programacao/)
+
 - O.O. (Orientado a Objetos)
   - Dart
 - Funcional
