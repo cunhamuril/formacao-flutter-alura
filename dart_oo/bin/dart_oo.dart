@@ -21,7 +21,11 @@ void main() {
     color: 'Roxa',
     weight: 40,
   );
+
+  print(howManyDaysToMature(20));
 }
+
+bool isMature(int daysSinceHarvest) => daysSinceHarvest >= 30;
 
 // NULL SAFETY => Garantia dentro de uma linguagem de programação orientada a objetos que nenhuma referência de objeto terá valores nulos.
 
@@ -50,4 +54,9 @@ showMature(
   print("A $name pesa $weight\n");
 }
 
-// bool isMature(int daysSinceHarvest) => daysSinceHarvest >= 30;
+int howManyDaysToMature(int days) {
+  int daysToMature = 30;
+  int daysMissing = daysToMature - days;
+
+  return daysMissing;
+}
