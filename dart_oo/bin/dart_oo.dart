@@ -43,18 +43,26 @@ void main() {
 
   // print(orange.checkMature(10));
 
-  Vegetable bellPepper = Vegetable('Pimentão', 30, 'Amarelo', true);
-  Fruit grape = Fruit("Uva", 40, "Roxa", "Doce", 5);
-  Citric lemon = Citric("Limão", 200.04, "Verde", "Azedo", 23, 9);
+  // Vegetable bellPepper = Vegetable('Pimentão', 30, 'Amarelo', true);
+  // Fruit grape = Fruit("Uva", 40, "Roxa", "Doce", 5);
+  // Citric lemon = Citric("Limão", 200.04, "Verde", "Azedo", 23, 9);
   Nuts chestnut = Nuts('Castanha do Pará', 2, 'Marrom', 'doce', 45, 35);
 
-  bellPepper.printFood();
-  bellPepper.cook();
-  grape.makeJuice();
-  lemon.isThereASoda(true);
-  chestnut.checkMature(65);
+  // bellPepper.printFood();
+  // bellPepper.cook();
+  // grape.makeJuice();
+  // lemon.isThereASoda(true);
+  // chestnut.checkMature(65);
 
-  chestnut.printFood();
+  // chestnut.printFood();
+
+  Fruit banana = Fruit('banana', 30, 'Amarela', 'Doce', 40);
+
+  banana.separateIngredients();
+  banana.makeDough();
+  banana.bake();
+
+  chestnut.makeDough();
 }
 
 // bool isMature(int daysSinceHarvest) => daysSinceHarvest >= 30;
@@ -105,7 +113,7 @@ class Food {
   }
 }
 
-class Fruit extends Food {
+class Fruit extends Food implements Cake {
   String flavor;
   int daysSinceHarvest;
   bool? isMature;
@@ -154,9 +162,24 @@ class Fruit extends Food {
   void makeJuice() {
     print('Você fez um ótimo suco de $name');
   }
+
+  @override
+  void separateIngredients() {
+    print('Catar a $name');
+  }
+
+  @override
+  void makeDough() {
+    print('Misturar a $name com farinha, açúcar, ovos...');
+  }
+
+  @override
+  void bake() {
+    print('Colocar no forno');
+  }
 }
 
-class Vegetable extends Food {
+class Vegetable extends Food implements Cake {
   bool isNeedToCook;
 
   Vegetable(String name, double weight, String color, this.isNeedToCook)
@@ -168,6 +191,21 @@ class Vegetable extends Food {
     } else {
       print('Nem precisa cozinhar!');
     }
+  }
+
+  @override
+  void bake() {
+    // TODO: implement bake
+  }
+
+  @override
+  void makeDough() {
+    // TODO: implement makeDough
+  }
+
+  @override
+  void separateIngredients() {
+    // TODO: implement separateIngredients
   }
 }
 
@@ -201,7 +239,21 @@ class Nuts extends Fruit {
     String color,
     String flavor,
     int daysSinceHarvest,
-    this.naturalOilPercentage, {
-    bool? isMature,
-  }) : super(name, weight, color, flavor, daysSinceHarvest);
+    this.naturalOilPercentage,
+  ) : super(name, weight, color, flavor, daysSinceHarvest);
+
+  @override
+  void makeDough() {
+    print('Tirar a casca');
+
+    super.makeDough();
+  }
+}
+
+abstract class Cake {
+  void separateIngredients();
+
+  void makeDough();
+
+  void bake();
 }
