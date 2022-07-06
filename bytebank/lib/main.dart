@@ -10,6 +10,18 @@ class ByteBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.light(
+          primary: Colors.green.shade900,
+          secondary: Colors.blueAccent.shade700,
+        ),
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: ColorScheme.dark(
+          primary: Colors.green.shade900,
+          secondary: Colors.blueAccent.shade700,
+        ),
+      ),
       home: TransfersList(),
     );
   }
