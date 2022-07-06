@@ -42,6 +42,7 @@ class TransferFormState extends State<TransferForm> {
               controller: widget._controllerAccountField,
               label: 'Número da conta',
               hint: '0000',
+              textInputAction: TextInputAction.next,
             ),
             Editor(
               controller: widget._controllerValueField,
