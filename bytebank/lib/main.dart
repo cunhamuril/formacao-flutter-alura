@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -87,51 +85,68 @@ class TransferForm extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            // padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _controllerAccountField,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              decoration: const InputDecoration(
-                labelText: 'Número da conta',
-                hintText: '0000',
-              ),
-              keyboardType: TextInputType.number,
-            ),
+          Editor(
+            controller: _controllerAccountField,
+            label: 'Número da conta',
+            hint: '0000',
           ),
-          Padding(
-            // padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _controllerValueField,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              decoration: const InputDecoration(
-                icon: Icon(Icons.monetization_on),
-                labelText: 'Valor',
-                hintText: '0.00',
-              ),
-              keyboardType: TextInputType.number,
-            ),
+          Editor(
+            controller: _controllerValueField,
+            label: 'Valor',
+            hint: '0.00',
+            icon: Icons.monetization_on,
           ),
           ElevatedButton(
-            onPressed: () {
-              final int? account = int.tryParse(_controllerAccountField.text);
-              final double? value = double.tryParse(_controllerValueField.text);
-
-              if (account != null && value != null) {
-                final Transfer createdTransfer = Transfer(value, account);
-
-                debugPrint(createdTransfer.toString());
-              }
-            },
+            onPressed: _createTransfer,
             child: const Text('Confirmar'),
           )
         ],
+      ),
+    );
+  }
+
+  void _createTransfer() {
+    final int? account = int.tryParse(_controllerAccountField.text);
+    final double? value = double.tryParse(_controllerValueField.text);
+
+    if (account != null && value != null) {
+      final Transfer createdTransfer = Transfer(value, account);
+
+      debugPrint(createdTransfer.toString());
+    }
+  }
+}
+
+class Editor extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final IconData? icon;
+
+  const Editor({
+    Key? key,
+    required this.controller,
+    required this.label,
+    required this.hint,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      // padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.all(16),
+      child: TextField(
+        controller: controller,
+        style: const TextStyle(
+          fontSize: 16,
+        ),
+        decoration: InputDecoration(
+          icon: icon != null ? Icon(icon) : null,
+          labelText: label,
+          hintText: hint,
+        ),
+        keyboardType: TextInputType.number,
       ),
     );
   }
