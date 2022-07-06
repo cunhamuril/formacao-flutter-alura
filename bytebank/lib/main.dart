@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,7 +11,7 @@ class ByteBankApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         // body: TransfersList(),
         body: TransferForm(),
@@ -64,10 +66,18 @@ class Transfer {
   final int account;
 
   Transfer(this.value, this.account);
+
+  @override
+  String toString() {
+    return "Transfer {value: $value, account: $account}";
+  }
 }
 
 class TransferForm extends StatelessWidget {
-  const TransferForm({Key? key}) : super(key: key);
+  TransferForm({Key? key}) : super(key: key);
+
+  final TextEditingController _controllerAccountField = TextEditingController();
+  final TextEditingController _controllerValueField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +86,16 @@ class TransferForm extends StatelessWidget {
         title: const Text('Criando transferência'),
       ),
       body: Column(
-        children: const <Widget>[
+        children: <Widget>[
           Padding(
             // padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: TextField(
-              style: TextStyle(
+              controller: _controllerAccountField,
+              style: const TextStyle(
                 fontSize: 16,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Número da conta',
                 hintText: '0000',
               ),
@@ -93,12 +104,13 @@ class TransferForm extends StatelessWidget {
           ),
           Padding(
             // padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: TextField(
-              style: TextStyle(
+              controller: _controllerValueField,
+              style: const TextStyle(
                 fontSize: 16,
               ),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 icon: Icon(Icons.monetization_on),
                 labelText: 'Valor',
                 hintText: '0.00',
@@ -107,8 +119,17 @@ class TransferForm extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: null,
-            child: Text('Confirmar'),
+            onPressed: () {
+              final int? account = int.tryParse(_controllerAccountField.text);
+              final double? value = double.tryParse(_controllerValueField.text);
+
+              if (account != null && value != null) {
+                final Transfer createdTransfer = Transfer(value, account);
+
+                debugPrint(createdTransfer.toString());
+              }
+            },
+            child: const Text('Confirmar'),
           )
         ],
       ),
