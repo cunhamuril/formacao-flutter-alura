@@ -10,35 +10,68 @@ class ByteBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        // body: TransfersList(),
-        body: TransferForm(),
-      ),
+      home: TransfersList(),
     );
   }
 }
 
-class TransfersList extends StatelessWidget {
-  const TransfersList({Key? key}) : super(key: key);
+class TransfersList extends StatefulWidget {
+  final List<Transfer> _transfers = [];
 
+  TransfersList({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return TransfersListState();
+  }
+}
+
+class TransfersListState extends State<TransfersList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transferências'),
       ),
-      body: Column(
-        children: <Widget>[
-          TransferItem(transfer: Transfer(100.0, 1000)),
-          TransferItem(transfer: Transfer(200.0, 2000)),
-          TransferItem(transfer: Transfer(300.0, 3000)),
-        ],
-      ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        child: Icon(Icons.add),
+      body: ListView.builder(
+          itemCount: widget._transfers.length,
+          itemBuilder: (BuildContext context, int index) {
+            final transfer = widget._transfers[index];
+
+            return TransferItem(transfer: transfer);
+          }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _handleNavigate(context),
+        child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void _handleNavigate(BuildContext context) async {
+    final Future<Transfer?> future = Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return TransferForm();
+      }),
+    );
+
+    // future.then(
+    //   (transfer) => {
+    //     if (transfer != null) widget._transfers.add(transfer),
+    //   },
+    // );
+
+    try {
+      Transfer? transfer = await future;
+
+      if (transfer != null) {
+        setState(() {
+          widget._transfers.add(transfer);
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
 
@@ -71,49 +104,60 @@ class Transfer {
   }
 }
 
-class TransferForm extends StatelessWidget {
+class TransferForm extends StatefulWidget {
   TransferForm({Key? key}) : super(key: key);
 
   final TextEditingController _controllerAccountField = TextEditingController();
   final TextEditingController _controllerValueField = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Criando transferência'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Editor(
-            controller: _controllerAccountField,
-            label: 'Número da conta',
-            hint: '0000',
-          ),
-          Editor(
-            controller: _controllerValueField,
-            label: 'Valor',
-            hint: '0.00',
-            icon: Icons.monetization_on,
-          ),
-          ElevatedButton(
-            onPressed: _createTransfer,
-            child: const Text('Confirmar'),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _createTransfer() {
+  void _createTransfer(BuildContext context) {
     final int? account = int.tryParse(_controllerAccountField.text);
     final double? value = double.tryParse(_controllerValueField.text);
 
     if (account != null && value != null) {
       final Transfer createdTransfer = Transfer(value, account);
 
-      debugPrint(createdTransfer.toString());
+      // debugPrint(createdTransfer.toString());
+
+      Navigator.pop(context, createdTransfer);
     }
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return TransferFormState();
+  }
+}
+
+class TransferFormState extends State<TransferForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Criando transferência'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Editor(
+              controller: widget._controllerAccountField,
+              label: 'Número da conta',
+              hint: '0000',
+            ),
+            Editor(
+              controller: widget._controllerValueField,
+              label: 'Valor',
+              hint: '0.00',
+              icon: Icons.monetization_on,
+            ),
+            ElevatedButton(
+              onPressed: () => widget._createTransfer(context),
+              child: const Text('Confirmar'),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
