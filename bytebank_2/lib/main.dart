@@ -1,3 +1,4 @@
+import 'package:bytebank_2/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,12 +12,13 @@ class BytebankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Bytebank',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.light(
+          primary: Colors.green.shade900,
+          secondary: Colors.blueAccent.shade700,
+        ),
       ),
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Dashboard')),
-      ),
+      home: const DashboardPage(),
     );
   }
 }
