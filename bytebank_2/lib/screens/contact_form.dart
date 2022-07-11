@@ -54,7 +54,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
                     final int accountNumber =
                         int.parse(_accountNumberController.text);
 
-                    final Contact newContact = Contact(name, accountNumber);
+                    final Contact newContact = Contact(0, name, accountNumber);
 
                     Navigator.pop(context, newContact);
                   },
