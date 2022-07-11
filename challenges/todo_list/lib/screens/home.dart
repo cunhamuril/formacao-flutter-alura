@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/loading_dialog.dart';
 import 'package:todo_list/components/task_form.dart';
 import 'package:todo_list/components/task_item.dart';
+import 'package:todo_list/database/dao/task_dao.dart';
 import 'package:todo_list/models/task.dart';
 
 class Home extends StatefulWidget {
-  final List<Task> _tasksList = [];
-  final TextEditingController _controllerTask = TextEditingController();
+  final TextEditingController controllerTask = TextEditingController();
 
   Home({Key? key}) : super(key: key);
 
@@ -14,58 +15,117 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final TaskDao _dao = TaskDao();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('TODO LIST'),
-      ),
-      body: Column(children: [
-        TaskForm(onSubmit: _addTask, controllerTask: widget._controllerTask),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget._tasksList.length,
-          itemBuilder: (BuildContext context, int index) {
-            var task = widget._tasksList[index];
+    void _handleSubmit(String text) async {
+      if (text != '') {
+        try {
+          // Loading
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) => const LoadingDialog(),
+          );
 
-            return TaskItem(
-              task: task,
-              onTap: () => _updateTask(task),
-            );
-          },
-        )
-      ]),
-    );
-  }
+          final Task newTask = Task(title: text, isDone: false);
 
-  void _addTask(String text) {
-    if (text != '') {
-      setState(() {
-        widget._tasksList.add(
-          Task(
-            title: text,
-            isDone: false,
-          ),
-        );
+          await _dao.save(newTask);
 
-        widget._controllerTask.clear();
-        FocusManager.instance.primaryFocus?.unfocus();
-      });
-    }
-  }
-
-  void _updateTask(Task task) {
-    final index = widget._tasksList.indexOf(task);
-
-    setState(() {
-      if (task.isDone) {
-        widget._tasksList.removeAt(index);
-      } else {
-        widget._tasksList[index] = Task(
-          title: task.title,
-          isDone: true,
-        );
+          setState(() {
+            widget.controllerTask.clear();
+            FocusManager.instance.primaryFocus?.unfocus();
+          });
+        } catch (error) {
+          debugPrint(error.toString());
+        } finally {
+          // End loading
+          Navigator.of(context).pop();
+        }
       }
-    });
+    }
+
+    void _handleUpdateTaskStatus(Task task) async {
+      try {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) => const LoadingDialog(),
+        );
+
+        if (task.isDone) {
+          await _dao.delete(task.id!);
+        } else {
+          await _dao.update(
+            Task(
+              id: task.id,
+              title: task.title,
+              isDone: true,
+            ),
+          );
+        }
+
+        setState(() {});
+      } catch (error) {
+        debugPrint(error.toString());
+      } finally {
+        Navigator.of(context).pop();
+      }
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('TODO LIST'),
+        ),
+        body: Column(
+          children: [
+            TaskForm(
+                onSubmit: _handleSubmit, controllerTask: widget.controllerTask),
+            FutureBuilder<List<Task>>(
+              initialData: const [],
+              future: _dao.findAll(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return const Text('Empty');
+
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          CircularProgressIndicator(),
+                          Text('Loading'),
+                        ],
+                      ),
+                    );
+
+                  case ConnectionState.active:
+                    break;
+
+                  case ConnectionState.done:
+                    final List<Task> tasksList = snapshot.data!;
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: tasksList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var task = tasksList[index];
+
+                        return TaskItem(
+                          task: task,
+                          onTap: () => _handleUpdateTaskStatus(task),
+                        );
+                      },
+                    );
+                }
+
+                return const Text('Unknown error');
+              },
+            ),
+          ],
+        ));
   }
 }
