@@ -19,6 +19,15 @@ class _ContactFormPageState extends State<ContactFormPage> {
     final TextEditingController _accountNumberController =
         TextEditingController();
 
+    void _handleSubmit() {
+      final String name = _nameController.text;
+      final int accountNumber = int.parse(_accountNumberController.text);
+
+      final Contact newContact = Contact(0, name, accountNumber);
+
+      _dao.save(newContact).then((id) => Navigator.pop(context));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('New contact'),
@@ -53,15 +62,7 @@ class _ContactFormPageState extends State<ContactFormPage> {
               child: SizedBox(
                 width: double.maxFinite, // full width
                 child: ElevatedButton(
-                  onPressed: () {
-                    final String name = _nameController.text;
-                    final int accountNumber =
-                        int.parse(_accountNumberController.text);
-
-                    final Contact newContact = Contact(0, name, accountNumber);
-
-                    _dao.save(newContact).then((id) => Navigator.pop(context));
-                  },
+                  onPressed: _handleSubmit,
                   child: const Text('Create'),
                 ),
               ),

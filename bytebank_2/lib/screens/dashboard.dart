@@ -6,6 +6,14 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _handleNavigate() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const ContactsListPage(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -23,13 +31,7 @@ class DashboardPage extends StatelessWidget {
             child: Material(
               color: Theme.of(context).primaryColor,
               child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const ContactsListPage(),
-                    ),
-                  );
-                },
+                onTap: _handleNavigate,
                 child: Container(
                   padding: const EdgeInsets.all(8.0),
                   height: 100,
