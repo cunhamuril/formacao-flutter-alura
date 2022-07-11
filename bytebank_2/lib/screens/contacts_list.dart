@@ -4,9 +4,14 @@ import 'package:bytebank_2/database/app_database.dart';
 import 'package:bytebank_2/models/contact.dart';
 import 'package:bytebank_2/screens/contact_form.dart';
 
-class ContactsListPage extends StatelessWidget {
+class ContactsListPage extends StatefulWidget {
   const ContactsListPage({Key? key}) : super(key: key);
 
+  @override
+  State<ContactsListPage> createState() => _ContactsListPageState();
+}
+
+class _ContactsListPageState extends State<ContactsListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +42,7 @@ class ContactsListPage extends StatelessWidget {
                 .active: // tem dado disponível, mas ainda não foi finalizado o future. Tipo um download
               break;
 
-            case ConnectionState.done:
+            case ConnectionState.done: // finalizado
               final List<Contact> contacts = snapshot.data!;
 
               return ListView.builder(
@@ -56,13 +61,13 @@ class ContactsListPage extends StatelessWidget {
         onPressed: () {
           Navigator.of(context)
               .push(
-                MaterialPageRoute(
-                  builder: (context) => const ContactFormPage(),
-                ),
-              )
-              .then(
-                (newContact) => debugPrint(newContact.toString()),
-              );
+            MaterialPageRoute(
+              builder: (context) => const ContactFormPage(),
+            ),
+          )
+              .then((value) {
+            setState(() {});
+          });
         },
         child: const Icon(
           Icons.add,
