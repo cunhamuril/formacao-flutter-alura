@@ -1,4 +1,3 @@
-import 'package:bytebank_2/http/client.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bytebank_2/screens/dashboard.dart';

@@ -14,7 +14,7 @@ class TransactionsListPage extends StatelessWidget {
         title: const Text('Transactions'),
       ),
       body: FutureBuilder<List<Transaction>>(
-        future: findAll(),
+        future: findAllTransactions(),
         builder: (context, snapshot) {
           final List<Transaction> transactions = snapshot.data ?? [];
 
