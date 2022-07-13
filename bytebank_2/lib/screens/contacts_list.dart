@@ -24,7 +24,7 @@ class _ContactsListPageState extends State<ContactsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contacts'),
+        title: const Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: const [],
@@ -54,12 +54,13 @@ class _ContactsListPageState extends State<ContactsListPage> {
               final List<Contact> contacts = snapshot.data!;
 
               return ListView.builder(
-                  itemCount: contacts.length,
-                  itemBuilder: (context, index) {
-                    final contact = contacts[index];
+                itemCount: contacts.length,
+                itemBuilder: (context, index) {
+                  final contact = contacts[index];
 
-                    return _ContactItem(contact);
-                  });
+                  return _ContactItem(contact);
+                },
+              );
           }
 
           return const Text('Unknown error');
