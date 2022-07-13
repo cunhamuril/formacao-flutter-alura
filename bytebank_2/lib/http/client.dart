@@ -34,25 +34,29 @@ Future<List<Transaction>> findAll() async {
     interceptors: [LoggingInterceptor()],
   );
 
-  final Response response = await client.get(
-    Uri.parse('$baseUrl/transactions'),
-  );
+  try {
+    final Response response = await client
+        .get(Uri.parse('$baseUrl/transactions'))
+        .timeout(const Duration(seconds: 5));
 
-  final List<dynamic> transactionsDecodedJson = jsonDecode(response.body);
-  final List<Transaction> transactions = [];
+    final List<dynamic> transactionsDecodedJson = jsonDecode(response.body);
+    final List<Transaction> transactions = [];
 
-  for (Map<String, dynamic> transaction in transactionsDecodedJson) {
-    transactions.add(
-      Transaction(
-        transaction['value'],
-        Contact(
-          0,
-          transaction['contact']['name'],
-          transaction['contact']['accountNumber'],
+    for (Map<String, dynamic> transaction in transactionsDecodedJson) {
+      transactions.add(
+        Transaction(
+          transaction['value'],
+          Contact(
+            0,
+            transaction['contact']['name'],
+            transaction['contact']['accountNumber'],
+          ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  return transactions;
+    return transactions;
+  } catch (error) {
+    rethrow;
+  }
 }

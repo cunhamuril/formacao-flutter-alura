@@ -1,3 +1,4 @@
+import 'package:bytebank_2/components/progress.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bytebank_2/models/contact.dart';
@@ -35,16 +36,7 @@ class _ContactsListPageState extends State<ContactsListPage> {
               break;
 
             case ConnectionState.waiting: // loading
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                    Text('Loading'),
-                  ],
-                ),
-              );
+              return const Progress();
 
             case ConnectionState
                 .active: // tem dado disponível, mas ainda não foi finalizado o future. Tipo um download
