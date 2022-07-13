@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bytebank_2/http/client.dart';
-import 'package:bytebank_2/models/contact.dart';
 import 'package:bytebank_2/models/transaction.dart';
 import 'package:http/http.dart';
 
@@ -11,7 +10,7 @@ class TransactionClient {
         .get(Uri.parse('$baseUrl/transactions'))
         .timeout(const Duration(seconds: 5));
 
-    List<Transaction> transactions = _toTransactions(response.body);
+    List<Transaction> transactions = _toTransactions(response);
 
     return transactions;
   }
@@ -34,14 +33,19 @@ class TransactionClient {
     return Transaction.fromJson(transactionResponseJson);
   }
 
-  List<Transaction> _toTransactions(String json) {
-    final List<dynamic> transactionsJson = jsonDecode(json);
-    final List<Transaction> transactions = [];
+  List<Transaction> _toTransactions(Response response) {
+    final List<dynamic> decodedJson = jsonDecode(response.body);
 
-    for (Map<String, dynamic> transactionJson in transactionsJson) {
-      transactions.add(Transaction.fromJson(transactionJson));
-    }
+    final List<Transaction> transactions = decodedJson
+        .map(
+          (json) => Transaction.fromJson(json),
+        )
+        .toList();
 
     return transactions;
+
+    // for (Map<String, dynamic> transactionJson in transactionsJson) {
+    //   transactions.add(Transaction.fromJson(transactionJson));
+    // }
   }
 }
