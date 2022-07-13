@@ -1,6 +1,6 @@
 import 'package:bytebank_2/components/centered_message.dart';
 import 'package:bytebank_2/components/progress.dart';
-import 'package:bytebank_2/http/client.dart';
+import 'package:bytebank_2/http/clients/transaction_client.dart';
 import 'package:bytebank_2/models/transaction.dart';
 import 'package:flutter/material.dart';
 
@@ -9,12 +9,14 @@ class TransactionsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TransactionClient transactionClient = TransactionClient();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transactions'),
       ),
       body: FutureBuilder<List<Transaction>>(
-        future: findAllTransactions(),
+        future: transactionClient.findAllTransactions(),
         builder: (context, snapshot) {
           final List<Transaction> transactions = snapshot.data ?? [];
 

@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:bytebank_2/http/client.dart';
+import 'package:bytebank_2/http/clients/transaction_client.dart';
 import 'package:bytebank_2/models/contact.dart';
 import 'package:bytebank_2/models/transaction.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,8 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
+  final TransactionClient transactionClient = TransactionClient();
+
   final TextEditingController _valueController = TextEditingController();
 
   @override
@@ -68,7 +70,9 @@ class _TransactionFormState extends State<TransactionForm> {
                         widget.contact,
                       );
 
-                      saveNewTransaction(transactionCreated).then(
+                      transactionClient
+                          .saveNewTransaction(transactionCreated)
+                          .then(
                         (Transaction? transaction) {
                           if (transaction != null) {
                             Navigator.pop(context);
